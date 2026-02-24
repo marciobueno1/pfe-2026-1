@@ -6,6 +6,7 @@ export default function Home() {
       Olá, Turma!
       <Profile />
       <Profile />
+      Exemplo de expressão: {5 ** 3}
     </div>
   );
 }
