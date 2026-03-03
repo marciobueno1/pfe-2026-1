@@ -1,4 +1,6 @@
 import Profile from "@/components/Profile";
+import Person from "@/components/Person";
+import { people } from "@/api";
 
 export default function Home() {
   return (
@@ -6,6 +8,11 @@ export default function Home() {
       Olá, Turma!
       <Profile />
       Exemplo de expressão: {5 ** 3}
+      <hr />
+      <h2>Star Wars People</h2>
+      {people.map((person) => (
+        <Person key={person.url} {...person} />
+      ))}
     </div>
   );
 }
