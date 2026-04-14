@@ -1,31 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { getTarefas } from "@/api";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 
 export default function ListaDeTarefas() {
-  const [tarefas, setTarefas] = useState([]);
-  async function handleCarregarTarefas() {
-    const response = await fetch(
-      "https://parseapi.back4app.com/classes/Tarefa",
-      {
-        headers: {
-          "X-Parse-Application-Id": "JYknWGUo6qYhDc3g8hvgQUvITZyz4KFAUttpAxVF",
-          "X-Parse-REST-API-Key": "uyhRDxFMCkxfy4hBJavBNlu48oSRdLEmxxZGrog4",
-        },
-      },
-    );
-    const data = await response.json();
-    setTarefas(data.results ?? []);
-  }
+  const { data, isFetching, isLoading, isError, error } = useQuery({
+    queryKey: ["tarefas"],
+    queryFn: getTarefas,
+  });
 
   return (
     <>
-      <h1>Lista de Tarefas</h1>
-      <hr />
-      <button onClick={handleCarregarTarefas}>Carregar Tarefas</button>
+      <Link href="/">Home</Link>
+      <br />
+      {isError && (
+        <>
+          <h2>Error: {error.message}</h2> <hr />{" "}
+        </>
+      )}
+      <h1>
+        Lista de Tarefas {isLoading && "(carregando...)"}{" "}
+        {isFetching && "[buscando...]"}
+      </h1>
       <hr />
       <ol>
-        {tarefas.map((tarefa) => (
+        {data?.map((tarefa) => (
           <li key={tarefa.objectId}>
             {tarefa.descricao} ({`${tarefa.concluida}`})
           </li>
