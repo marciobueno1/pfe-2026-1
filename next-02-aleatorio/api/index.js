@@ -8,8 +8,20 @@ const instance = axios.create({
   },
 });
 const tarefaURL = "/classes/Tarefa";
+const headerJson = { "Content-Type": "application/json" };
 
 export async function getTarefas() {
   const response = await instance.get(tarefaURL);
   return response.data?.results;
+}
+
+export async function addTarefa(descricao) {
+  const response = await instance.post(
+    tarefaURL,
+    {
+      descricao,
+    },
+    headerJson,
+  );
+  return response.data;
 }
