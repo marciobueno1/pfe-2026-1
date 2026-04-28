@@ -1,6 +1,7 @@
 "use client";
 
-import { addTarefa, getTarefas } from "@/api";
+import { addTarefa, deleteTarefa, getTarefas, updateTarefa } from "@/api";
+import { Tarefa } from "@/components/Tarefa";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
@@ -12,7 +13,7 @@ export default function ListaDeTarefas() {
     queryKey: ["tarefas"],
     queryFn: getTarefas,
   });
-  const mutation = useMutation({
+  const addMutation = useMutation({
     mutationFn: addTarefa,
     onSuccess: () => {
       // Invalidate and refetch
@@ -26,12 +27,44 @@ export default function ListaDeTarefas() {
       );
     },
   });
+  const updateMutation = useMutation({
+    mutationFn: updateTarefa,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["tarefas"] });
+    },
+    onError: (error) => {
+      alert(
+        "Servidor indiponível no momento. Tente novamente mais tarde. Erro: " +
+          error.message,
+      );
+    },
+  });
+  const deleteMutation = useMutation({
+    mutationFn: deleteTarefa,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["tarefas"] });
+    },
+    onError: (error) => {
+      alert(
+        "Servidor indiponível no momento. Tente novamente mais tarde. Erro: " +
+          error.message,
+      );
+    },
+  });
   function handleAdicionarTarefa() {
     if (!descricao) {
       alert("Digite uma descrição");
       return;
     }
-    mutation.mutate(descricao);
+    addMutation.mutate(descricao);
+  }
+  function handleAtualizarTarefa(tarefa) {
+    updateMutation.mutate(tarefa);
+  }
+  function handleRemoverTarefa(tarefa) {
+    deleteMutation.mutate(tarefa);
   }
 
   return (
@@ -43,9 +76,9 @@ export default function ListaDeTarefas() {
           <h2>Query Error: {error.message}</h2> <hr />{" "}
         </>
       )}
-      {mutation.isError && (
+      {addMutation.isError && (
         <>
-          <h2>Mutation Error: {mutation.error.message}</h2> <hr />{" "}
+          <h2>Mutation Error: {addMutation.error.message}</h2> <hr />{" "}
         </>
       )}
       <h1>
@@ -59,16 +92,23 @@ export default function ListaDeTarefas() {
           value={descricao}
           onChange={(evt) => setDescricao(evt.target.value)}
         />
-        <button onClick={handleAdicionarTarefa} disabled={mutation.isPending}>
+        <button
+          onClick={handleAdicionarTarefa}
+          disabled={addMutation.isPending}
+        >
           Adicionar
         </button>
       </p>
       <hr />
       <ol>
         {data?.map((tarefa) => (
-          <li key={tarefa.objectId}>
-            {tarefa.descricao} ({`${tarefa.concluida}`})
-          </li>
+          <Tarefa
+            key={tarefa.objectId}
+            tarefa={tarefa}
+            onUpdate={handleAtualizarTarefa}
+            onDelete={handleRemoverTarefa}
+            disabled={updateMutation.isPending || deleteMutation.isPending}
+          />
         ))}
       </ol>
     </>

@@ -21,7 +21,28 @@ export async function addTarefa(descricao) {
     {
       descricao,
     },
-    headerJson,
+    {
+      headers: headerJson,
+    },
   );
+  return response.data;
+}
+
+export async function updateTarefa(tarefa) {
+  const response = await instance.put(
+    `${tarefaURL}/${tarefa.objectId}`,
+    {
+      descricao: tarefa.descricao,
+      concluida: tarefa.concluida,
+    },
+    {
+      headers: headerJson,
+    },
+  );
+  return response.data;
+}
+
+export async function deleteTarefa(tarefa) {
+  const response = await instance.delete(`${tarefaURL}/${tarefa.objectId}`);
   return response.data;
 }
