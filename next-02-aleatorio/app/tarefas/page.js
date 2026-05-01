@@ -2,12 +2,16 @@
 
 import { addTarefa, deleteTarefa, getTarefas, updateTarefa } from "@/api";
 import { Tarefa } from "@/components/Tarefa";
+import { useTaskFilter } from "@/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function ListaDeTarefas() {
   const [descricao, setDescricao] = useState("");
+  const { filtrarConcluidas, toggleFiltrarConcluidas } = useTaskFilter(
+    (state) => state,
+  );
   const queryClient = useQueryClient();
   const { data, isFetching, isLoading, isError, error } = useQuery({
     queryKey: ["tarefas"],
@@ -67,6 +71,11 @@ export default function ListaDeTarefas() {
     deleteMutation.mutate(tarefa);
   }
 
+  let tarefas = data;
+  if (data && filtrarConcluidas) {
+    tarefas = data.filter((tarefa) => !tarefa.concluida);
+  }
+
   return (
     <>
       <Link href="/">Home</Link>
@@ -100,8 +109,17 @@ export default function ListaDeTarefas() {
         </button>
       </p>
       <hr />
+      <p>
+        Ocultar as tarefas concluídas{" "}
+        <input
+          type="checkbox"
+          checked={filtrarConcluidas}
+          onChange={toggleFiltrarConcluidas}
+        />
+      </p>
+      <hr />
       <ol>
-        {data?.map((tarefa) => (
+        {tarefas?.map((tarefa) => (
           <Tarefa
             key={tarefa.objectId}
             tarefa={tarefa}
