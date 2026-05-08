@@ -1,0 +1,20 @@
+import axios from "axios";
+
+const instance = axios.create({
+  baseURL: "https://parseapi.back4app.com",
+  headers: {
+    "X-Parse-Application-Id": "JYknWGUo6qYhDc3g8hvgQUvITZyz4KFAUttpAxVF",
+    "X-Parse-REST-API-Key": "uyhRDxFMCkxfy4hBJavBNlu48oSRdLEmxxZGrog4",
+  },
+});
+const headerJson = { "Content-Type": "application/json" };
+const headerSession = { ...headerJson, "X-Parse-Revocable-Session": "1" };
+const userURL = "/users";
+
+// 'user = { "password":"", "username": "","email": "" }'
+export async function userSignUp(user) {
+  const response = await instance.post(userURL, user, {
+    headers: headerSession,
+  });
+  return response.data;
+}

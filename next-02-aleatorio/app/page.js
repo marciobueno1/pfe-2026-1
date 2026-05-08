@@ -13,6 +13,8 @@ export default function Home() {
       <Link href="/tarefas">Lista de Tarefas</Link> (Filtro ativado:{" "}
       {filtrarConcluidas ? "Sim" : "Não"})
       <hr />
+      <Link href="/signup">Sign Up</Link>
+      <hr />
       <GeradorAleatorio />
       <hr />
       <GeradorAleatorio />
