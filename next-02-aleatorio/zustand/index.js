@@ -11,3 +11,13 @@ export const useTaskFilter = create(
     { name: "taskFilter-storage" },
   ),
 );
+
+export const useUserStorage = create(
+  persist(
+    (set) => ({
+      loggedUser: null,
+      setLoggedUser: (loggedUser) => set({ loggedUser }),
+    }),
+    { name: "user-storage" },
+  ),
+);

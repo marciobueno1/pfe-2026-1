@@ -18,3 +18,16 @@ export async function userSignUp(user) {
   });
   return response.data;
 }
+
+export async function userLogin(user) {
+  const response = await instance.post("/login", user, {
+    headers: headerSession,
+  });
+  return response.data;
+}
+export async function userLogout(sessionToken) {
+  const response = await instance.post("/logout", {
+    headers: { ...headerSession, "X-Parse-Session-Token": sessionToken },
+  });
+  return response.data;
+}

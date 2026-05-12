@@ -1,31 +1,27 @@
 "use client";
 
-import { userSignUp } from "@/api";
+import { userLogin } from "@/api";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserStorage } from "@/zustand";
 
-export default function SignUp() {
+export default function Login() {
   const router = useRouter();
   const setLoggedUser = useUserStorage((state) => state.setLoggedUser);
   const [user, setUser] = useState({
     username: "",
-    email: "",
     password: "",
   });
-  const signUpMutation = useMutation({
-    mutationFn: userSignUp,
+  const loginMutation = useMutation({
+    mutationFn: userLogin,
     onSuccess: (data) => {
       console.log("user data received from back4app:", user, data);
-      setLoggedUser({ ...user, ...data, password: undefined });
+      setLoggedUser(data);
       router.replace("/");
     },
     onError: (error) => {
-      alert(
-        "Servidor indiponível no momento. Tente novamente mais tarde. Erro: " +
-          error.message,
-      );
+      alert("Erro de Login. Erro: " + error.message);
     },
   });
 
@@ -35,7 +31,11 @@ export default function SignUp() {
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
-    signUpMutation.mutate(user);
+    if (!user.username || !user.password) {
+      alert("Preencha todos os campos");
+      return;
+    }
+    loginMutation.mutate(user);
   };
 
   return (
@@ -51,10 +51,6 @@ export default function SignUp() {
           />
         </p>
         <p>
-          Email:{" "}
-          <input name="email" value={user.email} onChange={handleChange} />
-        </p>
-        <p>
           Senha:{" "}
           <input
             type="password"
@@ -64,7 +60,10 @@ export default function SignUp() {
           />
         </p>
         <p>
-          <button>Sign Up</button>
+          <button type="submit">Login</button>{" "}
+          <button type="button" onClick={() => router.replace("/")}>
+            Cancelar
+          </button>
         </p>
       </form>
     </div>
