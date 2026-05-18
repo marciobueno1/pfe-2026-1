@@ -25,9 +25,28 @@ export async function userLogin(user) {
   });
   return response.data;
 }
+
 export async function userLogout(sessionToken) {
   const response = await instance.post("/logout", {
     headers: { ...headerSession, "X-Parse-Session-Token": sessionToken },
   });
+  return response.data;
+}
+
+export async function currentUser(sessionToken) {
+  const response = await instance.get(`${userURL}/me`, {
+    headers: { ...headerSession, "X-Parse-Session-Token": sessionToken },
+  });
+  return response.data;
+}
+
+export async function verificationEmailRequest(email) {
+  const response = await instance.post(
+    "/verificationEmailRequest",
+    { email },
+    {
+      headers: headerJson,
+    },
+  );
   return response.data;
 }

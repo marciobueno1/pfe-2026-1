@@ -15,7 +15,14 @@ export default function Home() {
       <Link href="/tarefas">Lista de Tarefas</Link> (Filtro ativado:{" "}
       {filtrarConcluidas ? "Sim" : "Não"})
       <hr />
-      <p>Usário logado: {loggedUser?.username ?? "Nenhum"}</p>
+      <p>
+        Usário logado:{" "}
+        {loggedUser ? (
+          <Link href="/userDetails">{loggedUser?.username}</Link>
+        ) : (
+          "Nenhum"
+        )}
+      </p>
       {!loggedUser ? (
         <>
           <Link href="/signup">Sign Up</Link>
