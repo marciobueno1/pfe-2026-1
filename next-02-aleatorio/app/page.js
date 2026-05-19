@@ -28,6 +28,8 @@ export default function Home() {
           <Link href="/signup">Sign Up</Link>
           <br />
           <Link href="/login">Log In</Link>
+          <br />
+          <Link href="/forgotPassword">Reset Password</Link>
         </>
       ) : (
         <>

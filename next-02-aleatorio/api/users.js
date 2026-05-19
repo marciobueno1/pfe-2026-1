@@ -50,3 +50,14 @@ export async function verificationEmailRequest(email) {
   );
   return response.data;
 }
+
+export async function requestPasswordReset(email) {
+  const response = await instance.post(
+    "/requestPasswordReset",
+    { email },
+    {
+      headers: headerJson,
+    },
+  );
+  return response.data;
+}
